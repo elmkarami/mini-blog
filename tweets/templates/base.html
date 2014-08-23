@@ -10,7 +10,12 @@
       <div class="container">
         <nav class="blog-nav">
           <a class="blog-nav-item active" href="{% url 'blog:tweet-list' %}">Home</a>
-
+          {% if user.is_authenticated %}
+          
+            <a class="blog-nav-item navbar-right" href="{% url 'blog:logout-user' %}"> Hello {{ user }} | Logout</a>
+          {% else %}
+           <a class="blog-nav-item navbar-right" href="{% url 'blog:login-user' %}">Login</a> 
+            {% endif %}
           
         </nav>
       </div>
