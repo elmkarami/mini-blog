@@ -1,0 +1,60 @@
+{% spaceless %}<html>
+<head>
+  <title></title>
+</head>
+<body>
+
+ <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+ <link href="http://getbootstrap.com/examples/blog/blog.css" rel="stylesheet">
+    <div class="blog-masthead">
+      <div class="container">
+        <nav class="blog-nav">
+          <a class="blog-nav-item active" href="{% url 'blog:tweet-list' %}">Home</a>
+
+          
+        </nav>
+      </div>
+    </div>
+ <div class="container">
+
+      <div class="jumbotron">
+          <h1>Tweets project </h1>
+      </div>   
+
+      <div class="row">
+
+        <div class="col-sm-8 blog-main">
+          {% block header %}
+            <h2>Last Tweets</h2>
+          {% endblock header %}
+        	<hr>
+
+          <div class="blog-post">
+
+          	{% block content %}
+          		
+          	{% endblock content %}
+
+
+
+        </div><!-- /.blog-main -->
+ </div><!-- /.blog-main -->
+        <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
+          <div class="sidebar-module sidebar-module-inset">
+            <h4>About</h4>
+            <p>This is a simple project for posting tweets by authenticated users</p>
+          </div>
+
+        </div><!-- /.blog-sidebar -->
+
+      </div><!-- /.row -->
+
+    </div><!-- /.container -->
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="http://getbootstrap.com/dist/js/bootstrap.min.js"></script>
+    <script src="http://getbootstrap.com/assets/js/docs.min.js"></script>
+</body>
+</html>
+{% endspaceless %}

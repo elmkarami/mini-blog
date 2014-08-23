@@ -2,7 +2,7 @@ import os
 # Django settings for tweets project.
 
 SETTINGS_DIR = os.path.dirname(os.path.abspath(__file__))
-TEMPLATE_ROOT = os.path.join(SETTINGS_DIR, 'templates')
+TEMPLATE_ROOT = os.path.join(SETTINGS_DIR,'..', 'templates')
 
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
