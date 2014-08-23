@@ -1,15 +1,14 @@
-from django.shortcuts import render
+from braces.views import LoginRequiredMixin
+
+from django.views.generic import ListView, DetailView
+from django.views.generic.edit import CreateView
+
 from django.shortcuts import HttpResponseRedirect
 
-from django.core.urlresolvers import reverse
-
-from django.views.generic import ListView
-from django.views.generic.base import View
-
-from django.contrib.auth import login
+from django.contrib.auth.models import User
 
 from apps.blog.models import Tweet
-from apps.blog.forms import LoginForm
+from apps.blog.forms import TweetForm
 
 
 class ListTweets(ListView):
@@ -20,24 +19,23 @@ class ListTweets(ListView):
     context_object_name = "tweets"
     paginate_by = 20
 
-    def get_queryset(self):
-        return super(ListTweets, self).get_queryset()
 
-
-class LoginView(View):
+class ListTweetsByUser(DetailView):
     """
-    Class based view that handle user authentication
+    Retrieve tweets for a particular User
     """
-    form_class = LoginForm
-    template_name = 'blog/login.html'
+    model = User
+    context_object_name = 'uzer'
+    template_name = 'blog/tweet_list_user.html'
 
-    def get(self, request, *args, **kwargs):
-        return render(request, self.template_name, {'form': self.form_class()})
 
-    def post(self, request, *args, **kwargs):
-        form = self.form_class(None, request.POST)
-        if form.is_valid():
-            login(request, form.get_user())
-            return HttpResponseRedirect(reverse('blog:tweet-list'))
-        return render(request, self.template_name, {'form': form})
+class CreateTweetView(LoginRequiredMixin, CreateView):
+    form_class = TweetForm
+    model = Tweet
+    success_url = '/'
 
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        obj.user = self.request.user
+        obj.save()
+        return HttpResponseRedirect('/')

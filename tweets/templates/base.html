@@ -8,8 +8,9 @@
  <link href="http://getbootstrap.com/examples/blog/blog.css" rel="stylesheet">
     <div class="blog-masthead">
       <div class="container">
-        <nav class="blog-nav">
-          <a class="blog-nav-item active" href="{% url 'blog:tweet-list' %}">Home</a>
+        <nav class="blog-nav">          
+          <a class="blog-nav-item" href="{% url 'blog:tweet-list' %}">Home</a>
+          <a class="blog-nav-item" href="{% url 'blog:tweet-create' %}">What's on your head ?</a>
           {% if user.is_authenticated %}
           
             <a class="blog-nav-item navbar-right" href="{% url 'blog:logout-user' %}"> Hello {{ user }} | Logout</a>

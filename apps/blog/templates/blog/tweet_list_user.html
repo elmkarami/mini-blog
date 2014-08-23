@@ -1,0 +1,16 @@
+{% extends "blog/tweet_list.html" %}
+
+{% block header %}
+	{% if uzer %}
+		<h3>{{ uzer|capfirst }}'s Timeline</h3>
+	{% else %}
+		{{ block.super }}
+	{% endif %}
+{% endblock header %}
+	
+
+	{% block content %}
+		{% with uzer.tweets.all as tweets %}
+		    {{ block.super }}
+		{% endwith %}
+	{% endblock content %}
