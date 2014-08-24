@@ -4,6 +4,7 @@ when you run "manage.py test".
 
 Replace this with more appropriate tests for your application.
 """
+import json
 from model_mommy import mommy
 
 from rest_framework.test import APIClient
@@ -21,6 +22,7 @@ from apps.blog.models import Tweet, HashTag
 from apps.blog.forms import TweetForm
 from apps.blog.views import ListTweets
 from apps.blog.templatetags.hashtag import hashtagify
+from apps.blog.serializers import HashTasgSerializer
 
 
 
@@ -154,8 +156,9 @@ class HashTagAPIViewTest(TestCase):
         HashTag.objects.create(tag='project')
 
     def test_filter_tags(self):
-        
+        self.create_tags()
         client = APIClient() 
-        response = client.get(reverse('blog:hashtag-tweet-list'))
+        response = client.get('%s?term=p' % reverse('blog:api-hashtag-list'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+        serializer = HashTasgSerializer(HashTag.objects.filter(tag__icontains='p'), many=True)
+        self.assertEqual(json.loads(response.content), serializer.data)
