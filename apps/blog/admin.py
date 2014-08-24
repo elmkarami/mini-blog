@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from apps.blog.models import Tweet
+from apps.blog.models import Tweet, HashTag
 
 
 class TweetAdmin(admin.ModelAdmin):
@@ -8,4 +8,6 @@ class TweetAdmin(admin.ModelAdmin):
     ordering = ('-created',)
 
 
+admin.site.register(HashTag)
 admin.site.register(Tweet, TweetAdmin)
+

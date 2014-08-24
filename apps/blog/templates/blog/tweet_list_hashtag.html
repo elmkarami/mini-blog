@@ -1,0 +1,13 @@
+{% extends "blog/tweet_list.html" %}
+
+{% block header %}
+
+		<h3>Tweets for hashtag : {{ hashtag|capfirst }}</h3>
+
+{% endblock header %}
+
+{% block content %}
+	{% with hashtag.tweets.all as tweets %}
+	    {{ block.super }}
+	{% endwith %}
+{% endblock content %}

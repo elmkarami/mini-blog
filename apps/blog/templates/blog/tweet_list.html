@@ -1,10 +1,11 @@
 {% extends "base.html" %}
 
+{% load hashtag %}
 
 {% block content %}
 
 	{% for tweet in tweets %}
-		<p>{{ tweet.message }}</p>
+		<p>{{ tweet.message|hashtagify|safe }}</p>
 		<p class="blog-post-meta">{{ tweet.created }}
 		<a href="{% url 'blog:user-tweet-list' tweet.user.pk %}">{{ tweet.user }}</a></p>
 	     <hr>

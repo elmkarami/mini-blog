@@ -13,7 +13,8 @@ from django.core.urlresolvers import reverse
 from django.test.client import Client
 from django.test import TestCase
 
-from apps.blog.models import Tweet
+from apps.blog.models import Tweet, HashTag
+from apps.blog.templatetags.hashtag import hashtagify
 
 
 class ListTweetsViewTest(TestCase):
@@ -77,4 +78,34 @@ class CreateTweetViewTest(TestCase):
         client.login(username='karami', password='mehdi')
         client.post(reverse('blog:tweet-create'), {'message':'test tweet'})
         self.assertEqual(Tweet.objects.filter(user=self.user).count(), 1)
+
+
+class TestHashTag(TestCase):
+
+    def test_add_tweet_without_hashtags(self):
+        Tweet.objects.create(message="Simple tweet", user=mommy.make(User))
+        self.assertFalse(HashTag.objects.all().exists())
+
+    def test_add_tweet_with_hashtags(self):
+        Tweet.objects.create(message="This is a #tweet #test", user=mommy.make(User))
+        self.assertEqual(HashTag.objects.all().count(), 2)
+        self.assertEqual(HashTag.objects.filter(tag='tweet').count(), 1)
+        self.assertEqual(HashTag.objects.filter(tag='test').count(), 1)
+
+    def test_hashtagify(self):
+        tweet = 'Simple #tweet for #django'
+        url_django = reverse('blog:hashtag-tweet-list', args=['django'])
+        url_tweet= reverse('blog:hashtag-tweet-list', args=['tweet'])
+        expected ='Simple <a href="%s">#tweet</a> for <a href="%s">#django</a>' % (url_tweet, url_django)
+        self.assertEqual(hashtagify(tweet), expected)
+
+    def test_list_tweet_by_hashtag(self):
+        tweet = 'Tweet #test'
+        tweet2 = 'another #tweet'
+        Tweet.objects.create(message=tweet, user=mommy.make(User))
+        Tweet.objects.create(message=tweet2, user=mommy.make(User))
+        client = Client()
+        response = client.get(reverse('blog:hashtag-tweet-list', args=['test']))
+        self.assertIn(hashtagify(tweet), response.content)
+        self.assertNotIn(hashtagify(tweet2), response.content)        
 
