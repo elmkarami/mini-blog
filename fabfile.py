@@ -12,7 +12,7 @@ def deploy(msg):
     "Full deploy: push to Heroku"
     update_dependencies
     local("git add . -A")
-    local('git commit -am  "%s"' % msg)
+    local('git commit -m  "%s"' % msg)
     local("git push heroku master")
         
 def update_dependencies():
