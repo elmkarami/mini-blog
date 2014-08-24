@@ -15,6 +15,12 @@ class TweetForm(forms.ModelForm):
         self.fields['message'].widget= forms.Textarea(attrs={'rows': 3, 'cols': 10})
         self.fields['message'].widget.attrs['class'] = "form-control"
 
+    def clean_message(self):
+        """
+        Prevent getting only withspaces in `message` field
+        """
+        return self.cleaned_data.get('message', '').strip()
+
 
 class LoginForm(AuthenticationForm):
 

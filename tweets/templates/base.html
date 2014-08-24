@@ -4,8 +4,16 @@
 </head>
 <body>
 
- <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
- <link href="http://getbootstrap.com/examples/blog/blog.css" rel="stylesheet">
+{% load staticfiles %}
+
+<style type="text/css">
+.ui-corner-all { padding-right: 10px; width: 32px; height: 32px; }
+
+</style>
+
+ <link href="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet">
+ <link href="{{ STATIC_URL }}css/blog.css" rel="stylesheet">
+ <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-lightness/jquery-ui.css" rel="stylesheet">
     <div class="blog-masthead">
       <div class="container">
         <nav class="blog-nav">          
@@ -57,9 +65,21 @@
 
     </div><!-- /.container -->
 
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script src="http://getbootstrap.com/dist/js/bootstrap.min.js"></script>
+{% comment %}
+  
+{% endcomment %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.2/jquery-ui.min.js"></script>
+    
+    <script src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
+     <script src="{{ STATIC_URL }}js/jquery-ui.triggeredAutocomplete.js"></script>
+    {% comment %}
     <script src="http://getbootstrap.com/assets/js/docs.min.js"></script>
+    {% endcomment %}
+    
+
+    {% block footer %}
+      
+    {% endblock footer %}
 </body>
 </html>

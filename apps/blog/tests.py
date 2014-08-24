@@ -6,6 +6,10 @@ Replace this with more appropriate tests for your application.
 """
 from model_mommy import mommy
 
+from rest_framework.test import APIClient
+from rest_framework import status
+from rest_framework.authtoken.models import Token
+
 from django.contrib.auth.models import User
 
 from django.core.urlresolvers import reverse
@@ -14,13 +18,17 @@ from django.test.client import Client
 from django.test import TestCase
 
 from apps.blog.models import Tweet, HashTag
+from apps.blog.forms import TweetForm
+from apps.blog.views import ListTweets
 from apps.blog.templatetags.hashtag import hashtagify
 
 
+
 class ListTweetsViewTest(TestCase):
+
     def setUp(self):
         self.first_tweet = mommy.make(Tweet)
-        self.tweets = mommy.make(Tweet, _quantity=20)
+        self.tweets = mommy.make(Tweet, _quantity=ListTweets.paginate_by)
 
     def test_listing_tweets_with_no_tweet(self):
         Tweet.objects.all().delete()
@@ -32,7 +40,7 @@ class ListTweetsViewTest(TestCase):
         client = Client()
         response = client.get(reverse('blog:tweet-list'))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(Tweet.objects.all().count(), 21)
+        self.assertEqual(Tweet.objects.all().count(), ListTweets.paginate_by + 1)
 
     def test_order_by_created(self):
         client = Client()
@@ -72,6 +80,17 @@ class CreateTweetViewTest(TestCase):
         user.save()
         self.user = user
 
+    def test_tweet_form(self):
+        form = TweetForm(data={'message':'   ', 'user':mommy.make(User)})
+        self.assertFalse(form.is_valid())
+
+    def test_add_withespace_tweet_by_authenticated_user(self):
+        self.new_user()
+        client = Client()
+        client.login(username='karami', password='mehdi')
+        client.post(reverse('blog:tweet-create'), {'message':'  '})
+        self.assertEqual(Tweet.objects.filter(user=self.user).count(), 0)        
+
     def test_add_tweet_by_authenticated_user(self):
         self.new_user()
         client = Client()
@@ -80,7 +99,7 @@ class CreateTweetViewTest(TestCase):
         self.assertEqual(Tweet.objects.filter(user=self.user).count(), 1)
 
 
-class TestHashTag(TestCase):
+class HashTagTest(TestCase):
 
     def test_add_tweet_without_hashtags(self):
         Tweet.objects.create(message="Simple tweet", user=mommy.make(User))
@@ -109,3 +128,19 @@ class TestHashTag(TestCase):
         self.assertIn(hashtagify(tweet), response.content)
         self.assertNotIn(hashtagify(tweet2), response.content)        
 
+
+class TweetAPIViewTest(TestCase):
+    def setUp(self):
+        mommy.make(Tweet, _quantity=3)
+
+    def test_list_tweets_by_anonymous_users(self):
+        client = APIClient()
+        response = client.get(reverse('blog:api-tweet-list'))
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_list_tweets_by_authenticated_users(self):
+        user = mommy.make(User)
+        client = APIClient() 
+        client.credentials(HTTP_AUTHORIZATION='Token ' + Token.objects.get(user=user).key)
+        response = client.get(reverse('blog:api-tweet-list'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

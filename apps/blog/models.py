@@ -1,7 +1,11 @@
 import re
 
+from rest_framework.authtoken.models import Token
+
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
 from apps.blog.templatetags.hashtag import pattern
@@ -75,3 +79,9 @@ class HashTag(models.Model):
         for tag in re.findall(pattern, tweet.message):
             hashtag, _ = HashTag.objects.get_or_create(tag=tag)
             hashtag.tweets.add(tweet)
+
+
+@receiver(post_save, sender=User)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)

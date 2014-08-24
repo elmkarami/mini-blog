@@ -4,7 +4,43 @@
 <form method="post" action="{% url 'blog:tweet-create' %}">
 	{% csrf_token %}
 	{{ form }}
+	<div id="chars">140</div>
 	<hr>
 	<input type="submit" value="Post">
 </form>
+
+
 {% endblock content %}
+
+
+{% block footer %}
+
+
+	<script type="text/javascript">
+
+	var limit = $('#chars').html();
+
+$("#id_message").keyup(function(e){
+	
+    if($(this).val().length > limit ) {
+    	/*
+    		Limit reached, allow just the first 140 characteres
+    	*/
+        $(this).val( $(this).val().substr(0, limit) );
+	}
+	else{
+		$('#chars').html(limit - $(this).val().length);
+	}
+	
+});
+
+
+$('#id_message').triggeredAutocomplete({
+	hidden: '#hidden_tag',
+	source: "/api/hashtags",
+	trigger: "#" 
+});
+
+
+</script>
+{% endblock footer %}

@@ -1,8 +1,13 @@
 from django.conf.urls import patterns, url
+from django.conf import settings
+
+from rest_framework import routers
 
 import views
+import api
 
 from forms import LoginForm
+
 
 urlpatterns = patterns('',
 	url(r'user/(?P<pk>[\d]+)/?$', views.ListTweetsByUser.as_view(), name='user-tweet-list'),
@@ -19,3 +24,15 @@ urlpatterns = patterns('',
     url(r'^$', views.ListTweets.as_view(), name='tweet-list'),
 
 )
+
+
+router = routers.SimpleRouter()
+router.register(r'api/tweets', api.TweetViewSet, base_name='api-tweet')
+router.register(r'api/hashtags', api.HashTagViewSet, base_name='api-hashtag')
+urlpatterns += router.urls
+
+
+
+urlpatterns += patterns('', (r'^static/(.*)$',
+							'django.views.static.serve',
+							{ 'document_root': settings.STATIC_ROOT }),)

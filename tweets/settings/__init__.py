@@ -76,6 +76,7 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
+    os.path.join(SETTINGS_DIR, '..', 'static'),
 )
 
 # List of finder classes that know how to find static files in
@@ -127,6 +128,10 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'apps.blog',
+    'djcelery',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'django_filters'
 
 )
 
@@ -172,3 +177,19 @@ try:
     MIDDLEWARE_CLASSES += DEV_MIDDLEWARE_CLASSES
 except ImportError:
     pass
+
+from celery_config import *
+
+from social_settings import *
+INSTALLED_APPS += SOCIAL_INSTALLED_APPS
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+    'rest_framework.renderers.JSONRenderer',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    )
+
+}
