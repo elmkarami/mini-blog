@@ -144,3 +144,18 @@ class TweetAPIViewTest(TestCase):
         client.credentials(HTTP_AUTHORIZATION='Token ' + Token.objects.get(user=user).key)
         response = client.get(reverse('blog:api-tweet-list'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class HashTagAPIViewTest(TestCase):
+    def create_tags(self):
+        HashTag.objects.create(tag='python')
+        HashTag.objects.create(tag='django')
+        HashTag.objects.create(tag='tweet')
+        HashTag.objects.create(tag='project')
+
+    def test_filter_tags(self):
+        
+        client = APIClient() 
+        response = client.get(reverse('blog:hashtag-tweet-list'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
