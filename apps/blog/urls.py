@@ -1,5 +1,4 @@
 from django.conf.urls import patterns, url
-from django.conf import settings
 
 from rest_framework import routers
 
@@ -32,7 +31,3 @@ router.register(r'api/hashtags', api.HashTagViewSet, base_name='api-hashtag')
 urlpatterns += router.urls
 
 
-
-urlpatterns += patterns('', (r'^static/(.*)$',
-							'django.views.static.serve',
-							{ 'document_root': settings.STATIC_ROOT }),)
