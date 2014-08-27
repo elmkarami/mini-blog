@@ -23,8 +23,4 @@ class HashTagViewSet(viewsets.ReadOnlyModelViewSet):
     """
     model = HashTag
     serializer_class = HashTasgSerializer
-
-    def list(self, request):
-        qs = HashTagFilter(request.GET, HashTag.objects.all())
-        serializer = HashTasgSerializer(qs, many=True)
-        return Response(serializer.data)
+    filter_class = HashTagFilter
