@@ -175,7 +175,7 @@ try:
     from local import *
     INSTALLED_APPS += DEV_INSTALLED_APPS
     MIDDLEWARE_CLASSES += DEV_MIDDLEWARE_CLASSES
-except ImportError:
+except (ImportError, NameError):
     pass
 
 from celery_config import *
